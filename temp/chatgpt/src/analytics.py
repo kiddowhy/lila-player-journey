@@ -14,6 +14,10 @@ class AnalyticsService:
         self.match_service = match_service
         self.grid_size = grid_size
 
+        self._overall_cache = None
+        self._map_cache = {}
+        self._day_cache = {}
+
     def _build_grid(self, df):
         grid = {
             "movement": np.zeros((self.grid_size, self.grid_size), dtype=np.int32),
@@ -136,19 +140,31 @@ class AnalyticsService:
 
     def map_summary(self, map_id):
 
+        if map_id in self._map_cache:
+            return self._map_cache[map_id]
+
         self.match_service.load()
 
         df = self.match_service.df
-
         map_df = df[df["map_id"] == map_id]
 
         if map_df.empty:
-            return None
+           return None
 
-        return self._build_grid(map_df)
+        result = self._build_grid(map_df)
+        self._map_cache[map_id] = result
+
+        return result
 
     def overall_summary(self):
 
+        if self._overall_cache is not None:
+            return self._overall_cache
+
         self.match_service.load()
 
-        return self._build_grid(self.match_service.df)
+        self._overall_cache = self._build_grid(
+            self.match_service.df
+        )
+
+        return self._overall_cache

@@ -3,6 +3,18 @@ Overview
 
 web player journey visualization tool for level designer
 
+Live Demo
+
+Frontend
+https://lila-player-journey.pages.dev
+
+Backend
+https://lila-player-journey-if6e.onrender.com
+
+Swagger
+https://lila-player-journey-if6e.onrender.com/docs
+
+
 Features
 Match browser
 Replay system
@@ -14,26 +26,17 @@ Analytics dashboard
 Map filters
 Date filters
 REST API
-Live Demo
-Frontend
-https://lila-player-journey.pages.dev
 
-Backend
-https://lila-player-journey-if6e.onrender.com
 
-Swagger
-https://lila-player-journey-if6e.onrender.com/docs
 Tech Stack
 
 Frontend
-
 HTML
 CSS
 Vanilla JavaScript
 Canvas API
 
 Backend
-
 Python
 FastAPI
 Pandas
@@ -41,7 +44,6 @@ PyArrow
 NumPy
 
 Deployment
-
 Cloudflare Pages
 Render
 Local Setup

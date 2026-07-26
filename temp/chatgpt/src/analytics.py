@@ -97,6 +97,7 @@ class AnalyticsService:
         summary = {
             "matches": int(df.match_id.nunique()),
             "players": int(df.user_id.nunique()),
+            "bots": int(df[df["player_type"] == "Bot"]["user_id"].nunique()),
             "movement_events": int((df.event.isin(MOVEMENT_EVENTS)).sum()),
             "combat_events": int((df.event.isin(COMBAT_EVENTS)).sum()),
             "loot_events": int((df.event == "Loot").sum()),

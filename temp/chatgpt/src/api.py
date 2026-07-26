@@ -10,10 +10,12 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.match_service import MatchService
+from src.analytics import AnalyticsService
 
-DATA_FOLDER = Path("player_data/February_10")
+DATA_FOLDER = Path("player_data")
 
 service = MatchService(DATA_FOLDER)
+analytics = AnalyticsService(service)
 
 app = FastAPI(
     title="LILA Player Journey API",
@@ -159,3 +161,40 @@ def timeline(match_id: str):
             "pixel_y",
         ]
     ].to_dict("records")
+
+    # ----------------------------------------------------------
+# Analytics
+# ----------------------------------------------------------
+
+@app.get("/analytics/day/{date}")
+def analytics_day(date: str):
+
+    result = analytics.day_summary(date)
+
+    if result is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No data for this date."
+        )
+
+    return result
+
+
+@app.get("/analytics/map/{map_id}")
+def analytics_map(map_id: str):
+
+    result = analytics.map_summary(map_id)
+
+    if result is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No data for this map."
+        )
+
+    return result
+
+
+@app.get("/analytics/all")
+def analytics_all():
+
+    return analytics.overall_summary()

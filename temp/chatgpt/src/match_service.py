@@ -42,16 +42,37 @@ class MatchService:
         if self.df is not None:
             return
 
-        df, _ = load_day(self.folder)
+        dfs = []
+
+        for day_folder in sorted(self.folder.iterdir()):
+
+            if not day_folder.is_dir():
+                continue
+
+            if not day_folder.name.startswith("February_"):
+                continue
+
+            print(f"Loading {day_folder.name}")
+
+            day_df, _ = load_day(day_folder)
+
+            if day_df.empty:
+                continue
+
+            day_df["date"] = day_folder.name
+
+            dfs.append(day_df)
+
+        if not dfs:
+            raise RuntimeError("No telemetry data found.")
+
+        df = pd.concat(dfs, ignore_index=True)
 
         df = classify_players(df)
-
         df = add_coords(df)
 
         self.df = df
-
         self.match_index = self._build_match_index()
-
     # ---------------------------------------------------------
     # Build match index
     # ---------------------------------------------------------
@@ -64,7 +85,8 @@ class MatchService:
             .agg(
                 players=("user_id", "nunique"),
                 rows=("user_id", "count"),
-                map=("map_id", "first"),
+                map_id=("map_id", "first"),
+                date=("date", "first"),
             )
             .sort_values(
                 ["players", "rows"],

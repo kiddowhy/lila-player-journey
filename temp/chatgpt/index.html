@@ -419,7 +419,7 @@ const state = {
    API LAYER (falls back to demo data if the backend isn't reachable)
    ===================================================================== */
 async function apiGet(path) {
-  const res = await fetch(API_BASE + path, { signal: AbortSignal.timeout(4000) });
+  const res = await fetch(API_BASE + path, { signal: AbortSignal.timeout(30000) });
   if (!res.ok) throw new Error(`${path} -> ${res.status}`);
   return res.json();
 }
